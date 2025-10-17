@@ -2,7 +2,7 @@
     "name": "craftyourliferplegacylauncher",
     "preductname": "CraftYourLifeRP Legacy Launcher",
     "version": "1.0.0",
-    "description": "Launcher pour le serveur CraftYourLifeRP Legacy.",
+    "description": "Launcher pour le serveur CraftYourLifeRP Legacy V1.",
     "main": "src/app.js",
     "author": "CraftYourLifeRPLegacy, Riptiaz/Boulldogo/Vexato/Luuxis",
     "env": "panel",
