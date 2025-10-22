@@ -34,6 +34,60 @@ loadTranslations();
 
 const settings_url = pkg.user ? `${pkg.settings}/${pkg.user}` : pkg.settings;
 
+// === CraftYourLifeRPLegacy: Token storage helpers ===
+function getCYLRPLegacyDir() {
+    const os = require('os');
+    const path = require('path');
+    const fs = require('fs');
+    const platform = process.platform;
+    let baseDir;
+    if (platform === 'win32') {
+        baseDir = process.env.APPDATA || path.join(os.homedir(), 'AppData', 'Roaming');
+    } else if (platform === 'darwin') {
+        baseDir = path.join(os.homedir(), 'Library', 'Application Support');
+    } else {
+        baseDir = process.env.XDG_CONFIG_HOME || os.homedir();
+    }
+    const folderName = '.CraftYourLifeRPLegacy';
+    const fullDir = path.join(baseDir, folderName);
+    try {
+        if (!fs.existsSync(fullDir)) fs.mkdirSync(fullDir, { recursive: true });
+    } catch (e) {
+        console.error('[TokenStorage] Failed to ensure directory:', fullDir, e);
+    }
+    return fullDir;
+}
+
+/**
+ * Save the current access token (and minimal account info) to disk so that
+ * external tools (e.g., the mod) can read it. Location depends on OS:
+ * - Windows: %APPDATA%\.CraftYourLifeRPLegacy\token.json
+ * - macOS:   ~/Library/Application Support/.CraftYourLifeRPLegacy/token.json
+ * - Linux:   ~/.CraftYourLifeRPLegacy/token.json (or $XDG_CONFIG_HOME)
+ */
+function saveTokenToDisk(accountOrToken) {
+    const path = require('path');
+    const fs = require('fs');
+    const dir = getCYLRPLegacyDir();
+    const file = path.join(dir, 'token.json');
+
+    const payload = (typeof accountOrToken === 'string')
+        ? { access_token: accountOrToken, updated_at: new Date().toISOString() }
+        : {
+            access_token: accountOrToken?.access_token,
+            uuid: accountOrToken?.uuid,
+            name: accountOrToken?.name,
+            updated_at: new Date().toISOString()
+          };
+
+    try {
+        fs.writeFileSync(file, JSON.stringify(payload, null, 2), 'utf-8');
+        console.log('[TokenStorage] Token saved to', file);
+    } catch (e) {
+        console.error('[TokenStorage] Failed to write token file:', e);
+    }
+}
+
 export {
     config,
     database,
@@ -42,7 +96,9 @@ export {
     addAccount,
     slider as Slider,
     accountSelect,
-    t
+    t,
+    getCYLRPLegacyDir,
+    saveTokenToDisk
 };
 
 function changePanel(id) {

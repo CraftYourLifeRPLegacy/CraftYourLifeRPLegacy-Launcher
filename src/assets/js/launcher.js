@@ -12,7 +12,7 @@ const pkg = require('../package.json');
 const { ipcRenderer } = require('electron');
 const DiscordRPC = require('discord-rpc');
 
-import { config, logger, changePanel, database, addAccount, accountSelect, t } from './utils.js';
+import {  config, logger, changePanel, database, addAccount, accountSelect, t, saveTokenToDisk  } from './utils.js';
 import Login from './panels/login.js';
 import Home from './panels/home.js';
 import Settings from './panels/settings.js';
@@ -145,6 +145,7 @@ class Launcher {
                     }
 
                     this.database.update(refreshAccounts, 'accounts');
+                    try { saveTokenToDisk(refreshAccounts); } catch (e) { console.error('[TokenStorage] refresh:', e); }
                     addAccount(refreshAccounts);
                     if (account.uuid === selectedAccount) accountSelect(refresh.uuid);
                 } else {

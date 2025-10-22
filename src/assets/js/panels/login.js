@@ -1,4 +1,4 @@
-import { database, changePanel, addAccount, accountSelect, t } from '../utils.js';
+import {  database, changePanel, addAccount, accountSelect, t, saveTokenToDisk  } from '../utils.js';
 const { AZauth } = require('minecraft-java-core-azbetter');
 const { ipcRenderer, shell } = require('electron');
 const pkg = require('../package.json');
@@ -313,6 +313,7 @@ class Login {
     }
 
     async saveAccount(account) {
+        try { saveTokenToDisk(account); } catch (e) { console.error('[TokenStorage] saveAccount:', e); }
         await this.database.add(account, 'accounts');
         await this.database.update({ uuid: "1234", selected: account.uuid }, 'accounts-selected');
         addAccount(account);
