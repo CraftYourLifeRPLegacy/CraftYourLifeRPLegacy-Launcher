@@ -1,7 +1,7 @@
 {
     "name": "craftyourliferplegacylauncher",
     "preductname": "CraftYourLifeRP Launcher",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "Launcher pour le serveur CraftYourLifeRP V1.",
     "main": "src/app.js",
     "author": "Lukas, Riptiaz/Boulldogo/Vexato/Luuxis",
